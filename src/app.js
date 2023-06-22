@@ -10,7 +10,7 @@ socket.on('connect', () => {
   console.log('Connected to server');
 });
 
-socket.on('disconnect', () => {
+socket.on('disconnection', () => {
   console.log('Disconnected from server');
 });
 
@@ -40,10 +40,31 @@ let game ={
   ballGraphics: undefined,
   playerPaddleGraphics: undefined, 
   opponentPaddleGraphics: undefined,
+  wallTopGraphics: undefined,
+  wallBottomGraphics: undefined,
 };
 
 function updateGame(gameState) {
   const { player1, player2, ball, wallTop, wallBottom } = gameState;
+  
+  if (!game.wallTopGraphics) {
+    console.log({wallTop})
+    game.wallTopGraphics = new PIXI.Graphics();
+    game.wallTopGraphics.beginFill(0xff0000);
+    game.wallTopGraphics.drawRect(wallTop.position.x, wallTop.position.y, 800, 5);
+    game.wallTopGraphics.endFill();
+    app.stage.addChild(game.wallTopGraphics);
+  }
+  if (!game.wallBottomGraphics) {
+    console.log(wallBottom.width)
+    game.wallBottomGraphics = new PIXI.Graphics();
+    game.wallBottomGraphics.lineStyle(1, 0xbbbbbb); 
+    game.wallBottomGraphics.beginFill(0x00ff00);
+    game.wallBottomGraphics.drawRect(wallBottom.position.x, wallBottom.position.y, 800, 5);
+    game.wallBottomGraphics.endFill();
+    app.stage.addChild(game.wallBottomGraphics);
+  }
+  
   if (!game.playerPaddleGraphics) {
     game.playerPaddleGraphics = createPaddle(playerNumber === 1 ? player1 : player2);
     app.stage.addChild(game.playerPaddleGraphics);
@@ -87,7 +108,7 @@ function updateBallPosition(ball) {
 function createBall(ball) {
   const ballGraphics = new PIXI.Graphics();
   ballGraphics.beginFill(0xffffff);
-  ballGraphics.drawCircle(100, 200, 10);
+  ballGraphics.drawCircle(ball.position.x, ball.position.y, 6);
   ballGraphics.endFill();
   return ballGraphics;
 }
