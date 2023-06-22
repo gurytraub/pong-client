@@ -32,6 +32,7 @@ socket.on('message', message => {
 });
 
 socket.on('gameState', gameState => {
+  console.log("Updating game state")
   updateGame(gameState);
 });
 
@@ -55,6 +56,7 @@ function updateGame(gameState) {
 
   // Update ball position
   if (ball) {
+    console.log("Creating ball for first time");
     const ballGraphics = createBall(ball);
     app.stage.addChild(ballGraphics);
   }
