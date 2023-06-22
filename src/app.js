@@ -14,6 +14,7 @@ socket.on('disconnection', () => {
   console.log('Disconnected from server');
 });
 
+
 let playerNumber;
 let playerPaddle;
 let opponentPaddle;
@@ -83,7 +84,7 @@ function updateGame(gameState) {
     app.stage.addChild(game.ballGraphics);
   } 
   updateBallPosition(ball);
-  console.log({pos: game.ballGraphics.position})
+  // console.log({pos: game.ballGraphics.position})
 }
 
 function createPaddle(player) {
@@ -112,3 +113,39 @@ function createBall(ball) {
   ballGraphics.endFill();
   return ballGraphics;
 }
+//handle keyboard
+const keys = {};
+function onKeyDown(event) {
+  keys[event.code] = true;
+  console.log('TRUE', event.code);
+}
+function onKeyUp(event) {
+  keys[event.code] = false;
+}
+
+// Attach event listeners
+window.addEventListener('keydown', onKeyDown);
+window.addEventListener('keyup', onKeyUp);
+
+app.ticker.add(() => {
+  // Access the keyboard state
+  // keys['KeyA'] will be true if 'A' key is currently pressed
+  // keys['KeyB'] will be true if 'B' key is currently pressed
+  // Add your logic here based on the key state  
+  Object.keys(keys).forEach(k => {
+    console.log(keys[k]);
+  });
+
+  if (keys.ArrowUp) {
+    console.log({keys})
+    if (game.playerPaddleGraphics.position.y - 3 > 0) {
+      socket.emit('paddleMovement', {y: game.playerPaddleGraphics.position.y - 3});
+    }
+  }
+  if (keys.ArrowDown) {
+    console.log({keys})
+    if (game.playerPaddleGraphics.position.y + 3 < 400) {
+      socket.emit('paddleMovement', {y: game.playerPaddleGraphics.position.y + 3});
+    }
+  }
+});
